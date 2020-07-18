@@ -37,16 +37,24 @@ async def on_message(message):
         # #     print(i["src"])
         image_url = "https://img.pokemondb.net/artwork/"+Pokemon_name.lower()+".jpg"
         r = requests.get(image_url)
-        with open("python_logo.png", 'wb') as f:
+        with open("poke.png", 'wb') as f:
             f.write(r.content)
         stats_data = requests.request("GET", url, headers=headers).json()
         for i in range(0,len(stats_data)):
-            if Pokemon_name == stats_data[i]["pokemon_name"] and stats_data[i]["form"]=="Normal":
-                await message.channel.send(file=discord.File("python_logo.png"))
-                attack = stats_data[i]["base_attack"]
-                defence = stats_data[i]["base_defense"]
-                stamina = stats_data[i]["base_stamina"]
-                print(attack,defence,stamina)
+            try:
+                if Pokemon_name == stats_data[i]["pokemon_name"] and stats_data[i]["form"]=="Normal":
+                    attack = "\nAttack: "+str(stats_data[i]["base_attack"])
+                    defence = "\nDefence: "+str(stats_data[i]["base_defense"])
+                    stamina = "\nStamina: "+str(stats_data[i]["base_stamina"])
+                    print(attack,defence,stamina)
+
+                    await message.channel.send(file=discord.File("poke.png"))
+                    await message.channel.send(Pokemon_name)
+                    await message.channel.send(attack)
+                    await message.channel.send(defence)
+                    await message.channel.send(stamina)
+            except:
+                await message.channel.send("Invalid pokemon name or this pokemon is still not introduced in Pokemon GO or maybe my error :sweat_smile:")
     await client.process_commands(message)
 
-client.run('NzMzNzgzMzI3NDU0MTM0MzIy.XxILNw.2uHLwMz4q3GNyYL1NV1DJcfRReE')
+client.run('NzMzNzgzMzI3NDU0MTM0MzIy.XxIp1A.2espV-_bb83M09BR5Mf69bc_WqM')
