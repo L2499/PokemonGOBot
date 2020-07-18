@@ -6,6 +6,7 @@ import bs4
 from selenium import webdriver
 import shutil
 
+
 client = commands.Bot(command_prefix = ".")
 
 @client.event
@@ -20,7 +21,7 @@ async def clear(ctx,amount=1):
 
 @client.event
 async def on_message(message):
-
+    Invalid_name=0
     if message.content.startswith(".find"):
         url = "https://pokemon-go1.p.rapidapi.com/pokemon_stats.json"
         Pokemon_name = message.content.split()
@@ -40,21 +41,49 @@ async def on_message(message):
         with open("poke.png", 'wb') as f:
             f.write(r.content)
         stats_data = requests.request("GET", url, headers=headers).json()
+        await message.channel.send(file=discord.File("poke.png"))
         for i in range(0,len(stats_data)):
             try:
                 if Pokemon_name == stats_data[i]["pokemon_name"] and stats_data[i]["form"]=="Normal":
+                    Invalid_name = 1
                     attack = "\nAttack: "+str(stats_data[i]["base_attack"])
                     defence = "\nDefence: "+str(stats_data[i]["base_defense"])
                     stamina = "\nStamina: "+str(stats_data[i]["base_stamina"])
                     print(attack,defence,stamina)
+                    Pokemon_name = " "+Pokemon_name+"\n"
+                    print(Pokemon_name)
+                    final="```"+Pokemon_name+attack+defence+stamina+"```"
+                    print(final)
+                    await message.channel.send(final)
+                    # await message.channel.send(Pokemon_name)
+                    # await message.channel.send(attack)
+                    # await message.channel.send(defence)
+                    # await message.channel.send(stamina)
 
-                    await message.channel.send(file=discord.File("poke.png"))
-                    await message.channel.send(Pokemon_name)
-                    await message.channel.send(attack)
-                    await message.channel.send(defence)
-                    await message.channel.send(stamina)
             except:
-                await message.channel.send("Invalid pokemon name or this pokemon is still not introduced in Pokemon GO or maybe my error :sweat_smile:")
+                try:
+                    Invalid_name=1
+                    if Pokemon_name == stats_data[i]["pokemon_name"]:
+                        attack = "\nAttack: " + str(stats_data[i]["base_attack"])
+                        defence = "\nDefence: " + str(stats_data[i]["base_defense"])
+                        stamina = "\nStamina: " + str(stats_data[i]["base_stamina"])
+                        print(attack, defence, stamina)
+                        Pokemon_name = " " + Pokemon_name + "\n"
+                        print(Pokemon_name)
+                        final = "```" + Pokemon_name + attack + defence + stamina + "```"
+                        print(final)
+                        await message.channel.send(final)
+                        # await message.channel.send(Pokemon_name)
+                        # await message.channel.send(attack)
+                        # await message.channel.send(defence)
+                        # await message.channel.send(stamina)
+                    else:
+                        Invalid_name=0
+                except:
+                    await message.channel.send("Invalid pokemon name or this pokemon is still not introduced in Pokemon GO or maybe my error :sweat_smile:")
+        if Invalid_name==0:
+            await message.channel.send("Invalid pokemon name or this pokemon is still not introduced in Pokemon GO")
     await client.process_commands(message)
 
-client.run('NzMzNzgzMzI3NDU0MTM0MzIy.XxIp1A.2espV-_bb83M09BR5Mf69bc_WqM')
+client.run('NzMzNzgzMzI3NDU0MTM0MzIy.XxKpOw.idgPHQHVL6RPtIuXGymLc54DEq8')
+
